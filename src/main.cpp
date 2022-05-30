@@ -1,18 +1,20 @@
-#include <SFML/Graphics/CircleShape.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Window/Event.hpp>
-#include <SFML/Window/Keyboard.hpp>
-#include <SFML/System/Vector2.hpp>
+#include <SFML/Config.hpp>
+#include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
+#include <string>
 #include <unordered_map>
 #include <utility>
 
+#include "config.h"
+#include "Game.h"
+
 int main() {
-    sf::RenderWindow window(sf::VideoMode(400, 400), "SFML works!");
-    sf::CircleShape shape(20.f);
-    shape.setFillColor(sf::Color::Green);
+    sf::RenderWindow window(sf::VideoMode(400, 400), "smolson-valley dev");
+    Game game;
 
-    std::unordered_map<sf::Keyboard::Key, std::pair<int, int>> keyToDir = {{sf::Keyboard::Up, {0, -1}}, {sf::Keyboard::Down, {0, 1}}, {sf::Keyboard::Left, {-1, 0}}, {sf::Keyboard::Right, {1, 0}}};
-
+    sf::Clock clock;
+    sf::Int64 elapsedTimeUs = 0;
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -20,14 +22,13 @@ int main() {
                 window.close();
         }
 
-        for (auto &entry : keyToDir) {
-            if (sf::Keyboard::isKeyPressed(entry.first)) {
-                shape.move(sf::Vector2f(entry.second.first / 10.0, entry.second.second / 10.0));
-            }
+        elapsedTimeUs += clock.restart().asMicroseconds();
+        while (elapsedTimeUs > US_PER_FRAME) {
+            window.clear();
+            game.update();
+            window.draw(game);
+            elapsedTimeUs -= US_PER_FRAME;
+            window.display();
         }
-
-        window.clear();
-        window.draw(shape);
-        window.display();
     }
 }
