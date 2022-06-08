@@ -10,7 +10,7 @@
 #include "Game.h"
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(400, 400), "smolson-valley dev");
+    sf::RenderWindow window(sf::VideoMode(256, 256), "smolson-valley dev");
     Game game;
 
     sf::Clock clock;
